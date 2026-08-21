@@ -11,12 +11,18 @@ export default async function DashboardPage() {
 
   if (!user) redirect("/login");
 
-  const { prisma } = await import("@/lib/db/prisma");
-  const records = await prisma.record.findMany({
-    where: { userId: user.id },
-    orderBy: { recordDate: "desc" },
-    take: 10,
-  });
+  let records: Array<{ id: string; activityName: string | null; type: string; recordDate: Date }> = [];
+  let databaseReady = true;
+  try {
+    const { prisma } = await import("@/lib/db/prisma");
+    records = await prisma.record.findMany({
+      where: { userId: user.id },
+      orderBy: { recordDate: "desc" },
+      take: 10,
+    });
+  } catch {
+    databaseReady = false;
+  }
   const typeLabels: Record<string, string> = {
     evolucao_fisica: "Evolução física",
     musculacao: "Musculação",
@@ -51,6 +57,7 @@ export default async function DashboardPage() {
             {records[0] && <p className="mt-1 text-sm text-zinc-500">{records[0].recordDate.toLocaleDateString("pt-BR")}</p>}
           </section>
         </div>
+        {!databaseReady && <p className="mt-6 rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-800">Sua conta entrou. O banco de registros ainda precisa ser inicializado no Turso.</p>}
 
         <section className="mt-8 rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm">
           <div className="flex items-center justify-between gap-4">

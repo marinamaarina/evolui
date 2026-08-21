@@ -35,7 +35,7 @@ export async function signup(formData: FormData) {
   if (!email || !email.includes("@") || password.length < 6) {
     redirect("/cadastro?erro=dados-invalidos");
   }
-  const { error } = await supabase.auth.signUp({ email, password });
+  const { data, error } = await supabase.auth.signUp({ email, password });
 
   if (error) {
     const reason = error.message.toLowerCase().includes("already registered")
@@ -44,6 +44,9 @@ export async function signup(formData: FormData) {
         ? "senha-invalida"
         : "nao-foi-possivel-criar";
     redirect(`/cadastro?erro=${reason}`);
+  }
+  if (data.user && data.user.identities?.length === 0) {
+    redirect("/cadastro?erro=email-existente");
   }
   redirect("/login?cadastro=sucesso");
 }
