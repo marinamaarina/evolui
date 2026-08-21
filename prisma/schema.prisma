@@ -1,0 +1,17 @@
+// Schema base do EVOLUI.
+// Nesta etapa (1 — setup do projeto) só configuramos a conexão.
+// Os models (Profile, Activity, Record, Media, Analysis) entram na etapa 3,
+// junto com as migrations e as políticas de Row Level Security.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  // A Supabase também expõe uma URL "pooled" (pgbouncer) recomendada para
+  // ambientes serverless — quando ela existir, usamos DIRECT_URL para as
+  // migrations e DATABASE_URL (pooled) para a aplicação em runtime.
+  directUrl = env("DIRECT_URL")
+}

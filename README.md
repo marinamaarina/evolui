@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# EVOLUI
 
-## Getting Started
+Registre e acompanhe sua evolução física e esportiva ao longo do tempo.
 
-First, run the development server:
+Este repositório está na **Etapa 1** do roadmap (setup do projeto). Veja o
+documento completo de arquitetura em `docs/Arquitetura EVOLUI.md`.
+
+## Stack
+
+Next.js (App Router) + TypeScript + Tailwind CSS · Supabase (Postgres + Auth
++ Storage) · Prisma.
+
+## Como rodar localmente
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abra http://localhost:3000 — a página inicial mostra o status do setup
+(o que já está pronto e o que ainda falta configurar).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Configurando o Supabase (necessário a partir da etapa 2)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Crie uma conta e um projeto em https://supabase.com.
+2. Em **Project Settings → API**, copie a **Project URL** e a **anon public
+   key**.
+3. Em **Project Settings → Database**, copie a **connection string**
+   (versão "Transaction pooler" para `DATABASE_URL`, e "Session"/direta para
+   `DIRECT_URL`).
+4. Copie `.env.example` para `.env.local` e preencha os quatro valores:
 
-## Learn More
+   ```bash
+   cp .env.example .env.local
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+5. Depois que os models existirem (etapa 3), gere o client do Prisma e
+   aplique as migrations:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   ```bash
+   npx prisma generate
+   npx prisma migrate dev
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+> **Nota:** o ambiente onde este projeto foi montado (sandbox de
+> desenvolvimento) não tem acesso de rede aos binários do Prisma
+> (`binaries.prisma.sh`), então `prisma generate`/`migrate` não puderam ser
+> testados por aqui. Isso não deve acontecer na sua máquina, na Vercel ou em
+> CI normais — só rode esses comandos no seu ambiente.
 
-## Deploy on Vercel
+## Estrutura de pastas
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+app/          rotas (App Router)
+components/   componentes de UI reutilizáveis (ui/, layout/)
+features/     lógica de cada domínio (auth, records, media, timeline, comparison, analysis)
+services/     integrações externas (supabase, storage, analysis)
+lib/          utilitários, validação (zod), acesso a dados
+prisma/       schema e migrations
+types/        tipos compartilhados
+docs/         documento de arquitetura do projeto
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Estado atual
+
+- [x] Projeto Next.js + Tailwind + TypeScript
+- [x] Estrutura de pastas da arquitetura
+- [x] Prisma configurado (sem models ainda — etapa 3)
+- [x] Clients Supabase (browser/server) prontos, aguardando credenciais
+- [ ] Autenticação (etapa 2)
+- [ ] Modelo de dados + migrations (etapa 3)
+- [ ] Fluxo de "Novo Registro" (etapa 4)
