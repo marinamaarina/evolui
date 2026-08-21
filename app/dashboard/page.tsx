@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { createClient } from "@/services/supabase/server";
 import { logout } from "@/features/auth/actions";
 
@@ -24,6 +25,7 @@ export default async function DashboardPage() {
         <section className="mt-10 rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm">
           <h2 className="text-lg font-semibold text-zinc-900">Dashboard em construção</h2>
           <p className="mt-2 text-sm leading-6 text-zinc-500">A autenticação está funcionando. O próximo passo é criar o banco de registros e permitir o envio de fotos e vídeos.</p>
+          <Link className="mt-6 inline-flex rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-zinc-700" href="/registros/novo">+ Novo registro</Link>
         </section>
       </div>
     </main>
