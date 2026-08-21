@@ -34,6 +34,8 @@ export default async function DashboardPage() {
             <h1 className="mt-2 text-3xl font-semibold tracking-tight text-zinc-900">Seu progresso começa aqui</h1>
             <p className="mt-2 text-sm text-zinc-500">{user.email}</p>
           </div>
+          <Link className="mr-auto rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-white" href="/evolucao">Minha evolução</Link>
+          <Link className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-white" href="/comparar">Comparar</Link>
           <form action={logout}><button className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-white" type="submit">Sair</button></form>
         </div>
         <div className="mt-10 grid gap-4 sm:grid-cols-3">
@@ -61,10 +63,10 @@ export default async function DashboardPage() {
             <ul className="mt-6 divide-y divide-zinc-100">
               {records.map((record) => (
                 <li className="flex items-center justify-between gap-4 py-4" key={record.id}>
-                  <div>
+                  <Link className="block" href={`/registros/${record.id}`}>
                     <p className="font-medium text-zinc-900">{record.activityName || typeLabels[record.type]}</p>
                     <p className="mt-1 text-sm text-zinc-500">{typeLabels[record.type]}</p>
-                  </div>
+                  </Link>
                   <time className="shrink-0 text-sm text-zinc-500" dateTime={record.recordDate.toISOString()}>{record.recordDate.toLocaleDateString("pt-BR")}</time>
                 </li>
               ))}

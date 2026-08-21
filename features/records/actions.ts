@@ -55,3 +55,37 @@ export async function createRecord(formData: FormData) {
   revalidatePath("/dashboard");
   redirect("/dashboard?registro=criado");
 }
+
+export async function uploadMedia(formData: FormData) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+
+  const recordId = String(formData.get("recordId") ?? "");
+  const file = formData.get("file");
+  if (!(file instanceof File) || file.size === 0 || file.size > 200 * 1024 * 1024) {
+    redirect(`/registros/${recordId}?erro=arquivo-invalido`);
+  }
+
+  const allowedTypes = new Set(["image/jpeg", "image/png", "image/webp", "video/mp4", "video/quicktime"]);
+  if (!allowedTypes.has(file.type)) redirect(`/registros/${recordId}?erro=formato-invalido`);
+
+  const { prisma } = await import("@/lib/db/prisma");
+  const record = await prisma.record.findFirst({ where: { id: recordId, userId: user.id } });
+  if (!record) redirect("/evolucao");
+
+  const extension = file.name.split(".").pop()?.toLowerCase() || "bin";
+  const storagePath = `${user.id}/${recordId}/${crypto.randomUUID()}.${extension}`;
+  const { error } = await supabase.storage.from("media").upload(storagePath, file, {
+    contentType: file.type,
+    upsert: false,
+  });
+  if (error) redirect(`/registros/${recordId}?erro=upload-falhou`);
+
+  const mediaCount = await prisma.media.count({ where: { recordId } });
+  await prisma.media.create({
+    data: { recordId, type: file.type.startsWith("video/") ? "video" : "photo", storagePath, orderIndex: mediaCount },
+  });
+  revalidatePath(`/registros/${recordId}`);
+  redirect(`/registros/${recordId}?media=adicionada`);
+}
