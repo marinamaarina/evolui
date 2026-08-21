@@ -7,8 +7,8 @@ documento completo de arquitetura em `docs/Arquitetura EVOLUI.md`.
 
 ## Stack
 
-Next.js (App Router) + TypeScript + Tailwind CSS · Supabase (Postgres + Auth
-+ Storage) · Prisma.
+Next.js (App Router) + TypeScript + Tailwind CSS · Turso (SQLite/libSQL) ·
+Supabase Auth + Storage · Prisma.
 
 ## Como rodar localmente
 
@@ -20,33 +20,26 @@ npm run dev
 Abra http://localhost:3000 — a página inicial mostra o status do setup
 (o que já está pronto e o que ainda falta configurar).
 
-## Configurando o Supabase (necessário a partir da etapa 2)
+## Configurando Turso e Supabase (necessário a partir da etapa 2)
 
-1. Crie uma conta e um projeto em https://supabase.com.
-2. Em **Project Settings → API**, copie a **Project URL** e a **anon public
-   key**.
-3. Em **Project Settings → Database**, copie a **connection string**
-   (versão "Transaction pooler" para `DATABASE_URL`, e "Session"/direta para
-   `DIRECT_URL`).
-4. Copie `.env.example` para `.env.local` e preencha os quatro valores:
+1. Crie um banco em https://turso.tech e copie a URL e o token de autenticação.
+2. Crie um projeto em https://supabase.com e copie a **Project URL** e a
+   **anon public key** para o Auth e Storage.
+3. Copie `.env.example` para `.env.local` e preencha os valores:
 
    ```bash
    cp .env.example .env.local
    ```
 
-5. Depois que os models existirem (etapa 3), gere o client do Prisma e
-   aplique as migrations:
+4. Depois que os models existirem (etapa 3), gere o client do Prisma:
 
    ```bash
    npx prisma generate
-   npx prisma migrate dev
+   npx prisma db push
    ```
 
-> **Nota:** o ambiente onde este projeto foi montado (sandbox de
-> desenvolvimento) não tem acesso de rede aos binários do Prisma
-> (`binaries.prisma.sh`), então `prisma generate`/`migrate` não puderam ser
-> testados por aqui. Isso não deve acontecer na sua máquina, na Vercel ou em
-> CI normais — só rode esses comandos no seu ambiente.
+> O Turso não oferece o RLS do Supabase. Toda consulta e mutação do EVOLUI
+> deverá filtrar pelo `user_id` autenticado no servidor.
 
 ## Estrutura de pastas
 

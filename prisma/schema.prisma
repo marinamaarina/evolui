@@ -1,5 +1,5 @@
 // Schema base do EVOLUI.
-// Nesta etapa (1 — setup do projeto) só configuramos a conexão.
+// Nesta etapa só configuramos a conexão com o banco Turso.
 // Os models (Profile, Activity, Record, Media, Analysis) entram na etapa 3,
 // junto com as migrations e as políticas de Row Level Security.
 
@@ -8,10 +8,5 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  // A Supabase também expõe uma URL "pooled" (pgbouncer) recomendada para
-  // ambientes serverless — quando ela existir, usamos DIRECT_URL para as
-  // migrations e DATABASE_URL (pooled) para a aplicação em runtime.
-  directUrl = env("DIRECT_URL")
+  provider = "sqlite"
 }
