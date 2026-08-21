@@ -11,7 +11,12 @@ function credentials(formData: FormData) {
 }
 
 export async function login(formData: FormData) {
-  const supabase = await createClient();
+  let supabase;
+  try {
+    supabase = await createClient();
+  } catch {
+    redirect("/login?erro=nao-configurado");
+  }
   const { email, password } = credentials(formData);
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
@@ -20,7 +25,12 @@ export async function login(formData: FormData) {
 }
 
 export async function signup(formData: FormData) {
-  const supabase = await createClient();
+  let supabase;
+  try {
+    supabase = await createClient();
+  } catch {
+    redirect("/cadastro?erro=nao-foi-possivel-criar");
+  }
   const { email, password } = credentials(formData);
   const { error } = await supabase.auth.signUp({ email, password });
 
