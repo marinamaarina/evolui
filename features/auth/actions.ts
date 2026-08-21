@@ -5,7 +5,7 @@ import { createClient } from "@/services/supabase/server";
 
 function credentials(formData: FormData) {
   return {
-    email: String(formData.get("email") ?? ""),
+    email: String(formData.get("email") ?? "").trim().toLowerCase(),
     password: String(formData.get("password") ?? ""),
   };
 }
@@ -32,9 +32,19 @@ export async function signup(formData: FormData) {
     redirect("/cadastro?erro=nao-foi-possivel-criar");
   }
   const { email, password } = credentials(formData);
+  if (!email || !email.includes("@") || password.length < 6) {
+    redirect("/cadastro?erro=dados-invalidos");
+  }
   const { error } = await supabase.auth.signUp({ email, password });
 
-  if (error) redirect("/cadastro?erro=nao-foi-possivel-criar");
+  if (error) {
+    const reason = error.message.toLowerCase().includes("already registered")
+      ? "email-existente"
+      : error.message.toLowerCase().includes("password")
+        ? "senha-invalida"
+        : "nao-foi-possivel-criar";
+    redirect(`/cadastro?erro=${reason}`);
+  }
   redirect("/login?cadastro=sucesso");
 }
 
