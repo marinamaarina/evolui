@@ -14,7 +14,7 @@ export async function createClient() {
   if (!isSupabaseConfigured) {
     throw new Error(
       "Supabase não configurado: defina NEXT_PUBLIC_SUPABASE_URL e " +
-        "NEXT_PUBLIC_SUPABASE_ANON_KEY em .env.local (veja .env.example)."
+        "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY em .env.local (veja .env.example)."
     );
   }
 
@@ -22,7 +22,8 @@ export async function createClient() {
 
   return createServerClient(
     env.NEXT_PUBLIC_SUPABASE_URL!,
-    env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+      env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
         getAll() {
