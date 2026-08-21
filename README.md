@@ -60,6 +60,6 @@ docs/         documento de arquitetura do projeto
 - [x] Estrutura de pastas da arquitetura
 - [x] Prisma configurado (sem models ainda — etapa 3)
 - [x] Clients Supabase (browser/server) prontos, aguardando credenciais
-- [ ] Autenticação (etapa 2)
-- [ ] Modelo de dados + migrations (etapa 3)
+- [x] Autenticação inicial (etapa 2)
+- [x] Modelo de dados base para Turso (etapa 3)
 - [ ] Fluxo de "Novo Registro" (etapa 4)

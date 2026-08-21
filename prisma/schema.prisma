@@ -1,7 +1,4 @@
-// Schema base do EVOLUI.
-// Nesta etapa só configuramos a conexão com o banco Turso.
-// Os models (Profile, Activity, Record, Media, Analysis) entram na etapa 3,
-// junto com as migrations e as políticas de Row Level Security.
+// Schema base do EVOLUI para Turso/libSQL.
 
 generator client {
   provider = "prisma-client-js"
@@ -9,4 +6,54 @@ generator client {
 
 datasource db {
   provider = "sqlite"
+}
+
+model Profile {
+  id        String   @id
+  name      String?
+  avatarUrl String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  records   Record[]
+}
+
+model Activity {
+  id        String   @id @default(cuid())
+  name      String
+  category  String
+  createdBy String?
+  createdAt DateTime @default(now())
+  records   Record[]
+
+  @@index([createdBy])
+}
+
+model Record {
+  id           String    @id @default(cuid())
+  userId       String
+  type         String
+  activityId   String?
+  activityName String?
+  recordDate   DateTime
+  notes        String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  profile      Profile   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  activity     Activity? @relation(fields: [activityId], references: [id], onDelete: SetNull)
+  media        Media[]
+
+  @@index([userId, recordDate])
+  @@index([activityId])
+}
+
+model Media {
+  id          String   @id @default(cuid())
+  recordId    String
+  type        String
+  storagePath String
+  orderIndex  Int      @default(0)
+  createdAt   DateTime @default(now())
+  record      Record   @relation(fields: [recordId], references: [id], onDelete: Cascade)
+
+  @@index([recordId, orderIndex])
 }
