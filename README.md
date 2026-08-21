@@ -38,6 +38,9 @@ Abra http://localhost:3000 — a página inicial mostra o status do setup
    npx prisma db push
    ```
 
+   Execute `npx prisma db push` com `TURSO_DATABASE_URL` e
+   `TURSO_AUTH_TOKEN` configurados para criar as tabelas no banco Turso.
+
 > O Turso não oferece o RLS do Supabase. Toda consulta e mutação do EVOLUI
 > deverá filtrar pelo `user_id` autenticado no servidor.
 
